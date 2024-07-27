@@ -1,11 +1,12 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import prisma from "../client/prismaClient";
+import prisma from "../client/prismaClient.js";
 
 const SECRET = process.env.JWT_SECRET;
+console.log('SECRET', SECRET)
 
 export const registerUser = async ({ name, email, password }) => {
-  const existingUser = await prisma.user.findUnique({
+  const existingUser = await prisma.user.findFirst({
     where: { email },
   });
 
@@ -14,7 +15,7 @@ export const registerUser = async ({ name, email, password }) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  
+  console.log("name ,email ,password", name, email, hashedPassword);
   const newUser = await prisma.user.create({
     data: { name, email, password: hashedPassword },
   });
@@ -22,8 +23,9 @@ export const registerUser = async ({ name, email, password }) => {
   return newUser;
 };
 
+
 export const loginUser = async ({ email, password }) => {
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findFirst({ where: { email } });
   if (!user) throw new Error("User not found");
 
   const isMatch = await bcrypt.compare(password, user.password);
