@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken'
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.SECRET;
 const adminCredentials = {
   username: 'admin',
   password: 'admin123' //we can store it here or in env or in db also db is prafered
 };
 
-// Admin login route
+
 const adminLogin= (req, res) => {
   const { username, password } = req.body;
   console.log('username , password', username , password);

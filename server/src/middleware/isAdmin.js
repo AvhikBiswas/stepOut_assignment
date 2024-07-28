@@ -1,20 +1,23 @@
 import jwt from "jsonwebtoken";
 
-const adminApiKey = process.env.ADMIN_KEY;
+const SECRET = process.env.SECRET; 
+console.log('SECRET', SECRET)
 
-const isAdmin = async (req, res, next) => {
+const isAdmin = (req, res, next) => {
   const authHeader = req.header("Authorization");
   if (authHeader) {
     const token = authHeader.split(" ")[1];
-    try {
-      const user = await jwt.verify(token, SECRET);
+    console.log('Token:', token);
+    jwt.verify(token, SECRET, (error, decoded) => {
+      if (error) {
+        return res.status(403).json({ error: "Forbidden", success: false });
+      }
       req.Admin = "Power Admin";
       next();
-    } catch (error) {
-      res.status(403).json({ error: "Forbidden", success: false });
-    }
+    });
   } else {
     res.status(403).json({ error: "No token found", success: false });
   }
 };
+
 export default isAdmin;

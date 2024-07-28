@@ -5,13 +5,13 @@ import {
   createTrain,
   getTrainsByFromTo,
   Login_controller,
-  modifyTrainSeats,
   register_controller,
 } from "./src/controller/index.js";
 import isUserAuth from "./src/middleware/authenticateToken.js";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import adminLogin from "./src/controller/adminLogin.js";
+import isAdmin from "./src/middleware/isAdmin.js";
 
 const app = express();
 const SECRET = process.env.JWT_SECRET ;
@@ -32,9 +32,8 @@ app.get("/", (req, res) => {
 
 app.post("/register", register_controller);
 app.post("/login", Login_controller);
-app.post("/train", createTrain);
+app.post("/train",isAdmin, createTrain); 
 app.get("/train",isUserAuth, getTrainsByFromTo);
-app.patch("/train", modifyTrainSeats);
 app.post("/booking", isUserAuth, bookSeatsController);
 app.post("/admin/login",adminLogin);
 

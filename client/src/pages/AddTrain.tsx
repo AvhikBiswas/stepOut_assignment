@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -6,16 +7,15 @@ import axios from "axios";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   trainName: z.string().nonempty("Train name is required"),
   sourceStation: z.string().nonempty("Source station is required"),
   destinationStation: z.string().nonempty("Destination station is required"),
   seatCapacity: z.number().positive("Seat capacity must be a positive integer"),
-  arrivalTimeSource: z.string().nonempty("Arrival time at source is required"),
-  arrivalTimeDestination: z
-    .string()
-    .nonempty("Arrival time at destination is required"),
+  arrivalTimeSource: z.string().nonempty("Departure time is required"),
+  arrivalTimeDestination: z.string().nonempty("Arrival time is required"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -29,20 +29,33 @@ const AddTrain: React.FC = () => {
     resolver: zodResolver(schema),
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await axios.post("http://localhost:8000/train", {
-        name: data.trainName,
-        source: data.sourceStation,
-        destination: data.destinationStation,
-        totalSeats: data.seatCapacity,
-        departure: data.arrivalTimeSource,
-        arrival: data.arrivalTimeDestination,
-      });
+      const token = localStorage.getItem("adminToken");
+      if (!token) {
+        navigate("/admin/login");
+        return;
+      }
+      const response = await axios.post(
+        "http://localhost:8000/train",
+        {
+          name: data.trainName,
+          source: data.sourceStation,
+          destination: data.destinationStation,
+          totalSeats: data.seatCapacity,
+          departure: data.arrivalTimeSource,
+          arrival: data.arrivalTimeDestination,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       console.log("Train added:", response.data);
-      toast.success("Train Added");
+      toast.success("Train added successfully");
     } catch (error) {
-      toast.success("Error adding train");
+      toast.error("Error adding train");
       console.error("Error adding train:", error);
     }
   };
@@ -87,10 +100,7 @@ const AddTrain: React.FC = () => {
             >
               Destination Station
             </label>
-            <Input
-              id="destinationStation"
-              {...register("destinationStation")}
-            />
+            <Input id="destinationStation" {...register("destinationStation")} />
             {errors.destinationStation && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.destinationStation.message}
@@ -136,7 +146,7 @@ const AddTrain: React.FC = () => {
           <div>
             <label
               htmlFor="arrivalTimeDestination"
-              className=" pb-1 block text-sm font-medium text-gray-700"
+              className="pb-1 block text-sm font-medium text-gray-700"
             >
               Arrival Time
             </label>

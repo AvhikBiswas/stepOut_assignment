@@ -11,7 +11,7 @@ const AdminHome: React.FC = () => {
         <h1 className="text-2xl font-bold mb-4">Admin Page</h1>
         <div className="space-y-4">
           <Button className="w-full" onClick={() => navigate('/admin/train')}>Add Train</Button>
-          <Button className="w-full" onClick={() => navigate('/admin/seat')}>Update Seat</Button>
+          <Button className="w-full" onClick={() => navigate('/admin/seat')}>Don't Press</Button>
         </div>
       </div>
     </div>
