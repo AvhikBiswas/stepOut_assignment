@@ -1,4 +1,4 @@
-import jwt from "../services/node_modules/jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 const SECRET = process.env.JWT_SECRET;
 

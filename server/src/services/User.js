@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import prisma from "../client/prismaClient.js";
 
 const SECRET = process.env.JWT_SECRET;
-console.log('SECRET', SECRET)
+console.log("SECRET", SECRET);
 
 export const registerUser = async ({ name, email, password }) => {
   const existingUser = await prisma.user.findFirst({
@@ -11,7 +11,7 @@ export const registerUser = async ({ name, email, password }) => {
   });
 
   if (existingUser) {
-    return { message: "User already exists" };
+    throw Error("User already exists");
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -23,7 +23,6 @@ export const registerUser = async ({ name, email, password }) => {
   return newUser;
 };
 
-
 export const loginUser = async ({ email, password }) => {
   const user = await prisma.user.findFirst({ where: { email } });
   if (!user) throw new Error("User not found");
@@ -31,7 +30,7 @@ export const loginUser = async ({ email, password }) => {
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new Error("Invalid credentials");
 
-  const token = jwt.sign({ id: user.id, email: user.email }, SECRET, {
+  const token = jwt.sign({ id: user.id, name: user.name }, SECRET, {
     expiresIn: "1h",
   });
   return token;

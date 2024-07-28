@@ -25,13 +25,28 @@ export const fetchTrainsByFromTo = async (from, to) => {
 };
 
 // Add a new train
-export const addTrain = async ({ name, source, destination, totalSeats }) => {
+export const addTrain = async ({
+  name,
+  source,
+  destination,
+  totalSeats,
+  departure,
+  arrival,
+}) => {
   try {
     // Ensure that availableSeats is not more than totalSeats
     if (totalSeats <= 0) {
       throw new Error("Available seats cant be zero or lower");
     }
-
+    console.log(
+      name,
+      source,
+      destination,
+      totalSeats,
+      totalSeats,
+      departure,
+      arrival
+    );
     return await prisma.train.create({
       data: {
         name,
@@ -39,6 +54,8 @@ export const addTrain = async ({ name, source, destination, totalSeats }) => {
         destination,
         totalSeats,
         availableSeats: totalSeats,
+        departure,
+        arrival,
       },
     });
   } catch (error) {

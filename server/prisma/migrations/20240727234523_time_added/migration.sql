@@ -16,6 +16,8 @@ CREATE TABLE "Train" (
     "destination" TEXT NOT NULL,
     "totalSeats" INTEGER NOT NULL,
     "availableSeats" INTEGER NOT NULL,
+    "departure" TEXT NOT NULL,
+    "arrival" TEXT NOT NULL,
 
     CONSTRAINT "Train_pkey" PRIMARY KEY ("id")
 );
@@ -29,6 +31,9 @@ CREATE TABLE "Booking" (
 
     CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- AddForeignKey
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

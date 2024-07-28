@@ -22,10 +22,9 @@ model Train {
   destination    String
   totalSeats     Int
   availableSeats Int 
+  departure      String
+  arrival        String
   bookings       Booking[]
-
-
-  
 }
 
 model Booking {

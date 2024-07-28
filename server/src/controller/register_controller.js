@@ -4,6 +4,8 @@ const register_controller = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    console.log('name ,email,password', name ,email,password)
+
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Missing required fields" });
     }

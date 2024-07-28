@@ -1,10 +1,9 @@
-// services/bookingService.js
 import prisma from '../client/prismaClient.js';
 
 export const bookSeats = async (userId, trainId, requestedSeats) => {
   return await prisma.$transaction(async (prisma) => {
-    
-    const train = await prisma.train.findUnique({
+
+    const train = await prisma.train.findFirst({
       where: { id: trainId },
     });
 
